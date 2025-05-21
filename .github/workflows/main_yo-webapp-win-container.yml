@@ -21,14 +21,14 @@ jobs:
       - name: Docker login to container registry
         uses: azure/docker-login@v1
         with:
-          login-server: ${{ secrets.REGISTRY_NAME }}
+          login-server: yoonaohacr.azurecr.io/
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Build and Push container to registry
         run: |
-          docker build --file=taskapp/taskapp/Dockerfile -t ${{ secrets.REGISTRY_NAME }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }} .
-          docker push ${{ secrets.REGISTRY_NAME }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
+          docker build -t yoonaohacr.azurecr.io/test-win-container:${{ github.sha }} .
+          docker push yoonaohacr.azurecr.io/test-win-container:${{ github.sha }}
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -40,6 +40,7 @@ jobs:
       - name: Deploy container to Azure App Service
         uses: Azure/webapps-deploy@v2
         with:
-          app-name: ${{ secrets.APP_NAME }}
-          images: ${{ secrets.REGISTRY_NAME }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
+          app-name: 'yo-webapp-win-container'
+          slot-name: 'Production'
+          images: 'yoonaohacr.azurecr.io/test-win-container:${{ github.sha }}'
           
