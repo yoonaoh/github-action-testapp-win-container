@@ -22,8 +22,8 @@ jobs:
         uses: azure/docker-login@v1
         with:
           login-server: yoonaohacr.azurecr.io/
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          username: ${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_0E255FB695D94CAAB965B9722D6E30C2 }}
+          password: ${{ secrets.AZUREAPPSERVICE_CONTAINERPASSWORD_0AA3010AE54D43DD8C7E508A7AF46B8C }}
 
       - name: Build and Push container to registry
         run: |
