@@ -6,7 +6,7 @@ name: Build and Deploy Windows Container App to Azure App Service
 on:
   push:
     branches:
-      - master
+      - main
     workflow_dispatch:
 
 jobs:
