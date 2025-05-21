@@ -43,5 +43,5 @@ jobs:
         with:
           app-name: 'yo-webapp-win-container'
           slot-name: 'Production'
-          images: 'yoonaohacr.azurecr.io/test-win-container:${{ github.sha }}'
+          images: 'yoonaohacr.azurecr.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_0E255FB695D94CAAB965B9722D6E30C2 }}/test-win-container:${{ github.sha }}'
           
