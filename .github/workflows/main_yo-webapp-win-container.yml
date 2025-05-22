@@ -1,0 +1,48 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - yo-webapp-win-container
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker login to container registry
+        uses: docker/login-action@v2
+        with:
+          registry: yoonaohacr.azurecr.io/
+          username: ${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_5D50FDB51F604F4E89C31A28D78CFCEC }}
+          password: ${{ secrets.AZUREAPPSERVICE_CONTAINERPASSWORD_7DF99DFBAEBA4783A0A4491BAE8C645E }}
+          
+
+      - name: Build and Push container to registry
+        run: |
+          docker build -t yoonaohacr.azurecr.io/test-win-container:${{ github.sha }} .
+          docker push yoonaohacr.azurecr.io/test-win-container:${{ github.sha }}
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6F7051F1920A4274BB5BB4E6A9A42BB6 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_16BB6DC04C1147939C38E6CB740B8789 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6BFD663B177F4AD9A83BC3A4BFA1F6FB }}
+
+      - name: Deploy container to Azure App Service
+        uses: Azure/webapps-deploy@v2
+        with:
+          app-name: 'yo-webapp-win-container'
+          slot-name: 'Production'
+          images: 'yoonaohacr.azurecr.io/test-win-container:${{ github.sha }}'
+          
